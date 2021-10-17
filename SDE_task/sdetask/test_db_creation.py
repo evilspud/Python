@@ -64,31 +64,5 @@ for table_name in table_names:
     # line break
     print("\n")
 
-
-"""
-# view sample of data
-
-
-c.execute("SELECT * FROM products")
-products = c.fetchmany(10)
-
-c.execute("SELECT * FROM accounts")
-accounts = c.fetchmany(10)
-
-c.execute("SELECT * FROM customers")
-customers = c.fetchmany(10)
-
-c.execute("SELECT * FROM accounts_customer_link")
-accounts_customer_link = c.fetchmany(10)
-
-conn.commit()
-
-# print(properties)
-# print(products)
-# print(accounts)
-# print(customers)
-# print(accounts_customer_link)
-
-
-"""
+# close connection
 conn.close()
