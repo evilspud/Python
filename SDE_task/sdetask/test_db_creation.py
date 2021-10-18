@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-"""
-test_db_creation.py
+"""test_db_creation.py
 
 Author: Matthew Southerington
 
@@ -15,7 +14,6 @@ To inform the new user of:
     Content and structure of tables
     Sample Data
     Success of build
-
 """
 
 
@@ -55,9 +53,8 @@ for table_name in table_names:
     # line break
     print("\n")
 
-    # show a sample of data
+    # show 5 line sample of data
     c.execute("SELECT * FROM '%s'" % table_name)
-
     datalines = c.fetchmany(5)
     for dataline in datalines:
         print(dataline)
