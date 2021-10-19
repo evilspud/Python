@@ -55,7 +55,7 @@ for table_name in table_names:
 
     # show 5 line sample of data
     c.execute("SELECT * FROM '%s'" % table_name)
-    datalines = c.fetchmany(5)
+    datalines = c.fetchmany(10)
     for dataline in datalines:
         print(dataline)
     # line break
