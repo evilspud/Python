@@ -71,14 +71,13 @@ c.execute("""SELECT
 # list of tuples
 results = c.fetchmany(2)
 
-
 for result in results:
-    # get tuple data into separate variables for calculations
+    # variables
     (a_account_number, a_arrears_balance, a_regular_payment_amount,
         pt_in_possession, acl_customer_pos, c_bankruptcy_ind,
         c_deceased_date) = result
 
-    # calculate months_in_arrears
+    # months_in_arrears
     months_in_arrears_raw = a_arrears_balance / a_regular_payment_amount
     floor = 0
     months_in_arrears_floored = max(months_in_arrears_raw, floor)
@@ -110,7 +109,7 @@ for result in results:
 
 print(result, months_in_arrears, in_possession)
 
-
+conn.close()
 
 """
 - The JSON file should be named 'mortgages_data.json'.
