@@ -36,7 +36,7 @@ JSON output fields:
         populated
 
 """
-
+import json
 import sqlite3
 
 # set connection to named database
@@ -46,9 +46,55 @@ with conn:
     # create a cursor for passing commands to the database
     c = conn.cursor()
 
-# join accounts to customers and properties
-# calculate
+# Customers
+c.execute("""
+    SELECT
+        acl.acl_account_number
+        ,acl.acl_customer_pos
+        ,c.c_bankruptcy_ind
+        ,c.c_deceased_date
+    FROM customers c
+    LEFT JOIN accounts_customer_link acl
+    ON acl.acl_customer_number = c.c_customer_number
+""")
 
+cutomers_sql_output = c.fetchmany(6)
+
+list_customer_dict = []
+
+for customer in cutomers_sql_output:
+    (c_account_number, customer_position, is_bankrupt_yn,
+        is_deceased_yn) = customer
+
+    if is_bankrupt_yn == 'Y':
+        is_bankrupt = True
+    else:
+        is_bankrupt = False
+
+    if is_deceased_yn == 'Y':
+        is_deceased = True
+    else:
+        is_deceased = False
+
+    customer_dict = {
+        (c_account_number, customer_position): {
+            "customer_position": customer_position,
+            "is_bankrupt": is_bankrupt,
+            "is_deceased": is_deceased,
+            }
+    }
+
+    print(customer_dict)
+
+    # account_customer_list = dict(customer_dict)
+    # print(account_customer_list)
+
+    # list_customer_dict.append(customer_dict)
+
+# dict_all_customers = {"customers": list_customer_dict}
+# print(dict_all_customers)
+
+# Accounts and Properties
 c.execute("""
     SELECT
         a.a_account_number
@@ -60,54 +106,35 @@ c.execute("""
         ON a.a_property_number = pt.pt_property_number
 """)
 
-accounts = c.fetchmany(2)
-print(accounts)
+accounts_sql_output = c.fetchmany(2)
 
-for account in accounts:
-    (account_number, arrears_balance, regular_payment_amount,
-        in_possession_YN) = account
+list_account_dict = []
+
+for account in accounts_sql_output:
+    (a_account_number, arrears_balance, regular_payment_amount,
+        in_possession_yn) = account
 
     months_in_arrears = max(
         round(arrears_balance/regular_payment_amount, 1), 0)
 
-    if in_possession_YN == 'Y':
+    if in_possession_yn == 'Y':
         in_possession = True
     else:
         in_possession = False
 
-dict_accounts = {"accounts": {
-    "account_number": account_number,
-    "months_in_arrears": months_in_arrears,
-    "in_possession": in_possession,
-    "in_default": "xxx",
+    account_dict = {
+        "account_number": a_account_number,
+        "months_in_arrears": months_in_arrears,
+        "in_possession": in_possession,
+        "in_default": "xxx",
     }
-}
 
-print(dict_accounts)
+    list_account_dict.append(account_dict)
 
+dict_all_accounts = {"accounts": list_account_dict}
+
+with open("SDE_task/sdetask/output/mortgages_data.json", "w") as json_file:
+    json.dump(dict_all_accounts, json_file, indent=4)
 
 
 conn.close()
-
-
-
-
-
-
-
-
-
-"""
-c.execute(
-                ,pt.pt_in_possession
-                ,acl.acl_customer_pos
-                ,c.c_bankruptcy_ind
-                ,c.c_deceased_date
-            FROM accounts a
-            LEFT JOIN accounts_customer_link acl
-                ON a.a_account_number = acl.acl_account_number
-            LEFT JOIN customers c
-                ON acl.acl_customer_number = c.c_customer_number
-            LEFT JOIN properties pt
-                ON a.a_property_number = pt.pt_property_number
-"""

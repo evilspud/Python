@@ -40,8 +40,8 @@ for table_name in table_names:
     # info of SQLite pragma table itself
     c.execute("SELECT * FROM pragma_table_info")
     # use cursor description to list variable names
-    column_attr_headers = [variable[0] for variable in c.description]
-    print(column_attr_headers)
+    column_attribute_headers = [variable[0] for variable in c.description]
+    print(column_attribute_headers)
 
     # column attributes
     # insert table name into SQLite statement
@@ -53,7 +53,7 @@ for table_name in table_names:
     # line break
     print("\n")
 
-    # show 5 line sample of data
+    # show sample of data
     c.execute("SELECT * FROM '%s'" % table_name)
     datalines = c.fetchmany(10)
     for dataline in datalines:
