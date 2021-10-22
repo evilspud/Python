@@ -4,13 +4,15 @@
             "account_number": 32,
             "months_in_arrears": 15.1,
             "in_possession": false,
-            "in_default": "xxx"
+            "in_default": "xxx",
+            "customers": []
         },
         {
             "account_number": 33,
             "months_in_arrears": 0,
             "in_possession": false,
-            "in_default": "xxx"
+            "in_default": "xxx",
+            "customers": []
         }
     ]
 }
