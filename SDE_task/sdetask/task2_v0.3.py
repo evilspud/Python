@@ -37,6 +37,7 @@ JSON output fields:
 
 """
 import json
+import math
 import sqlite3
 
 # set connection to named database
@@ -56,37 +57,10 @@ c.execute("""
     FROM accounts a
     LEFT JOIN properties pt
         ON a.a_property_number = pt.pt_property_number
+    ORDER BY a_account_number
 """)
 
-accounts_sql_output = c.fetchmany(2)
-
-list_account_dict = []
-
-for account in accounts_sql_output:
-    (a_account_number, arrears_balance, regular_payment_amount,
-        in_possession_yn) = account
-
-    months_in_arrears = max(
-        round(arrears_balance/regular_payment_amount, 1), 0)
-
-    if in_possession_yn == 'Y':
-        in_possession = True
-    else:
-        in_possession = False
-
-    account_dict = {
-        "account_number": a_account_number,
-        "months_in_arrears": months_in_arrears,
-        "in_possession": in_possession,
-        "in_default": "xxx",
-        "customers": []
-    }
-
-    list_account_dict.append(account_dict)
-
-dict_all_accounts = {"accounts": list_account_dict}
-print(dict_all_accounts)
-
+accounts_sql_output = c.fetchmany(10)
 
 # Customers and Account Link
 c.execute("""
@@ -98,42 +72,71 @@ c.execute("""
     FROM customers c
     LEFT JOIN accounts_customer_link acl
     ON acl.acl_customer_number = c.c_customer_number
+    ORDER BY acl_account_number
 """)
 
-customers_sql_output = c.fetchmany(6)
+customers_sql_output = c.fetchmany(10)
 
-customers_by_account_dict = {"customers": []}
+# Account Derivations
+list_account_dict = []
 
-# Customer Derivations
-for customer in customers_sql_output:
-    (c_account_number, customer_position, is_bankrupt_yn,
-        deceased_date) = customer
+for account in accounts_sql_output:
+    (a_account_number, arrears_balance, regular_payment_amount,
+        in_possession_yn) = account
 
-    if is_bankrupt_yn == 'Y':
-        is_bankrupt = True
+    if regular_payment_amount in (0, math.isnan):
+        months_in_arrears = 0
     else:
-        is_bankrupt = False
+        months_in_arrears = max(
+            round(arrears_balance/regular_payment_amount, 1), 0)
 
-    if deceased_date != '':
-        is_deceased = True
+    if in_possession_yn == 'Y':
+        in_possession = True
     else:
-        is_deceased = False
+        in_possession = False
 
-    customer_dict = {
-        c_account_number: {
-            "customer_position": customer_position,
-            "is_bankrupt": is_bankrupt,
-            "is_deceased": is_deceased
-        }
+    account_dict = {
+            "account_number": a_account_number,
+            "months_in_arrears": months_in_arrears,
+            "in_possession": in_possession,
+            "in_default": "xxx",
+            "customers": []
     }
 
-    print(customer_dict)
+    # find matching customers
 
+    # Customer Derivations
+    for customer in customers_sql_output:
+        (c_account_number, customer_position, is_bankrupt_yn,
+            deceased_date) = customer
 
+        if is_bankrupt_yn == 'Y':
+            is_bankrupt = True
+        else:
+            is_bankrupt = False
+
+        if deceased_date != '':
+            is_deceased = True
+        else:
+            is_deceased = False
+
+        customer_dict = {
+                "customer_position": customer_position,
+                "is_bankrupt": is_bankrupt,
+                "is_deceased": is_deceased
+            }
+
+        print(customer_dict)
+        if account_dict["account_number"] == c_account_number:
+            account_dict["customers"].append(customer_dict)
+
+    list_account_dict.append(account_dict)
+
+dict_json_output = {"accounts:": list_account_dict}
 
 
 with open("SDE_task/sdetask/output/mortgages_data.json", "w") as json_file:
-    json.dump(dict_all_accounts, json_file, indent=4)
+    json.dump(dict_json_output, json_file, indent=4)
 
 
 conn.close()
