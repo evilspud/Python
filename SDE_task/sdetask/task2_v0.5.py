@@ -101,7 +101,7 @@ for account in accounts_sql_output:
             "account_number": a_account_number,
             "months_in_arrears": months_in_arrears,
             "in_possession": in_possession,
-            "in_default": "xxx",
+            "in_default": False,
             "customers": []
     }
 
@@ -134,6 +134,7 @@ for account in accounts_sql_output:
             account_dict["customers"].append(customer_dict)
 
     dict_json_output["accounts"].append(account_dict)
+    
 
 with open("SDE_task/sdetask/output/mortgages_data.json", "w") as json_file:
     json.dump(dict_json_output, json_file, indent=4)
