@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""xxxxxxxxxxxxxx.py
+"""create_summary_csv_report.py
 
 Author: Matthew Southerington
 
@@ -39,6 +39,8 @@ c.execute("""SELECT DISTINCT
 """
           )
 
+conn.close()
+
 # CSV export
 # use with statement so that csv path only remains open when being used
 # open csv in write mode
@@ -53,6 +55,3 @@ with open('SDE_task/sdetask/output/product_summary_report.csv', 'w') as f:
 
     # write results of the last execution i.e. cursor (c) to the csv file
     writer.writerows(c)
-
-# close connection
-conn.close()

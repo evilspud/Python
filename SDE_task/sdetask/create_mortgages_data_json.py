@@ -1,33 +1,22 @@
 #!/usr/bin/env python3
 
-"""xxxxxxxxxx.py
+"""create_mortgages_data_json.py
 
 Author: Matthew Southerington
 
-Extract data from the SQLite3 mortgages database (data/mortgages.db)
-and create a JSON file called mortgages_data.json
+Extract data from the SQLite3 mortgages database and create a JSON file
+called mortgages_data.json
 
 JSON output fields:
-
-    _months_in_arrears_
-    _in_possession_
-    _in_default_
-        An account is said to be in default in (any of) the following
-        circumstances:
-            2. The account is 3 months or more in arrears and either customer 1
-                or customer 2 is bankrupt
-
-    _customer_position_:
-        Derived from ACCOUNTS_CUSTOMERS_LINK.ACL_CUSTOMER_POSITION
-
-    _is_bankrupt_:
-        A boolean flag derived from CUSTOMERS.C_BANKRUPTCY_IND
-
-    _is_deceased_:
-        This should be set to 'true' if the CUSTOMERS.C_DECEASED_DATE is
-        populated
-
+    months_in_arrears
+    in_possession
+    in_default
+    customer_position
+    is_bankrupt
+    is_deceased
 """
+
+
 import json
 import math
 import sqlite3
@@ -51,9 +40,8 @@ def yn_bool(yn_flag: str) -> bool:
 
 
 def months_in_arrears(
-    arrears_balance: float, 
-    regular_payment_amount: float
-    ) -> float:
+        arrears_balance: float,
+        regular_payment_amount: float) -> float:
     """Absolute arrears balance for an account divided by the
         regular monthly payment amount. The value should be rounded to 1
         decimal place. The minimum value should be 0.
@@ -71,6 +59,7 @@ def months_in_arrears(
     else:
         return max(round(arrears_balance/regular_payment_amount, 1), 0)
 
+
 def is_deceased(deceased_date: str) -> bool:
     """Boolean to indicate if customer deceased date is populated
 
@@ -81,6 +70,38 @@ def is_deceased(deceased_date: str) -> bool:
     bool: is_deceased
     """
     return False if deceased_date == '' else True
+
+
+def in_default(
+        customer_bankruptcy_flags: list, in_possession: bool,
+        months_in_arrears: float) -> bool:
+    """A boolean to indicate if the account is in default
+
+    An account is said to be in default in the following circumstances:
+        1. The account is in possession
+        2. The account is 3 months or more in arrears and either customer 1 or
+            customer 2 is bankrupt
+        3. The account is more than 6 months in arrears
+
+    Args:
+    customer_bankruptcy_flags (list): A list of booleans representing the
+        bankruptcy status of the selected customers
+    in_possession (bool): A boolean representing whether the account is in
+        possession
+    months_in_arrars (float): Total arrears balance divided by regular monthly
+        payment, floored at zero
+
+    Returns:
+    bool: in_default
+    """
+
+    is_account_bankrupt = any(customer_bankruptcy_flags)
+
+    return (
+        (is_account_bankrupt and months_in_arrears >= 3)
+        or months_in_arrears >= 6
+        or in_possession
+    )
 
 
 # set connection to named database
@@ -118,29 +139,17 @@ c.execute("""
 
 customers_sql_output = c.fetchall()
 
+conn.close()
+
 # Account Derivations
-dict_json_output = {"accounts": []}
+json_output = {"accounts": []}
 
 for account in accounts_sql_output:
     (a_account_number, arrears_balance, regular_payment_amount,
         in_possession_yn) = account
 
-    # In Possession
-    in_possession = yn_bool(in_possession_yn)
-
-    # Months in Arrears
-    months_arrears = months_in_arrears(arrears_balance, regular_payment_amount)
-    
-    account_dict = {
-        "account_number": a_account_number,
-        "months_in_arrears": months_arrears,
-        "in_possession": in_possession,
-        "customers": []
-    }
-
-    # List of Customers
-
-    customers_by_account = [{
+    # Associated Customers
+    associated_customers = [{
         "customer_position": customer[1],
         "is_bankrupt": yn_bool(customer[2]),
         "is_deceased": is_deceased(customer[3])
@@ -148,35 +157,32 @@ for account in accounts_sql_output:
         for customer in customers_sql_output if customer[0] == a_account_number
     ]
 
-    # In Default
+    # Customer bankruptcy flags
+    customer_bankruptcy_flags = [
+        customers["is_bankrupt"]
+        for customers in associated_customers
+    ]
 
-print(customers_by_account)
+    # Months In Arrears
+    months_arrears = months_in_arrears(arrears_balance, regular_payment_amount)
 
-    ##### for customers in customers_by_account list,
-    # 
-    # bring back a list of the values of  
+    # In Possession
+    in_posssesion = yn_bool(in_possession_yn)
 
+    # Account Derivations
+    account_dict = {
+        "account_number": a_account_number,
+        "months_in_arrears": months_arrears,
+        "in_possession": in_posssesion,
+        "in_default": in_default(
+            customer_bankruptcy_flags,
+            in_posssesion,
+            months_arrears
+        ),
+        "customers": associated_customers
+    }
 
-    # in_default = any(
-    #     in_possession,
-    #     months_arrears > 6,
-        
-
-    # )
-    
-    # print(in_default)
-
-
-
-
-
-    #     if account_dict["account_number"] == c_account_number:
-    #         account_dict["customers"].append(customer_dict)
-
-    # dict_json_output["accounts"].append(account_dict)
-
+    json_output["accounts"].append(account_dict)
 
 with open("SDE_task/sdetask/output/mortgages_data.json", "w") as json_file:
-    json.dump(dict_json_output, json_file, indent=4)
-
-conn.close()
+    json.dump(json_output, json_file, indent=4)
