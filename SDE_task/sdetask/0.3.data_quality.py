@@ -6,13 +6,6 @@ conn = sqlite3.connect('SDE_task/sdetask/data/mortgages.db')
 # create a cursor for passing commands to the database
 c = conn.cursor()
 
-# deceased customer date format
-c.execute("""
-SELECT DISTINCT c_deceased_date FROM customers
-""")
-output = c.fetchall()
-# print(output)
-
 # list of deceased customer numbers
 c.execute("""
 SELECT DISTINCT c_customer_number
@@ -22,7 +15,7 @@ WHERE c_deceased_date != ''
 output = c.fetchall()
 # print(output)
 
-# list of accounts where regular payment is zero or missing
+# regular payment is zero or missing
 c.execute("""
 SELECT a_account_number, a_regular_payment_amount
 FROM accounts
