@@ -134,7 +134,7 @@ for account in accounts_sql_output:
             account_dict["customers"].append(customer_dict)
 
     dict_json_output["accounts"].append(account_dict)
-    
+
 
 with open("SDE_task/sdetask/output/mortgages_data.json", "w") as json_file:
     json.dump(dict_json_output, json_file, indent=4)
