@@ -20,10 +20,13 @@ Returns file 'product_summary_report.csv'.
 import csv
 import sqlite3
 
-# set connection to named database
-conn = sqlite3.connect('SDE_task/sdetask/data/mortgages.db')
+from set_parameters import db_path
 
-# create a cursor for passing commands to the database
+
+# Database connection
+conn = sqlite3.connect(db_path)
+
+# Cursor
 c = conn.cursor()
 
 # join accounts to products by product number
@@ -39,8 +42,6 @@ c.execute("""SELECT DISTINCT
 """
           )
 
-conn.close()
-
 # CSV export
 # use with statement so that csv path only remains open when being used
 # open csv in write mode
@@ -55,3 +56,5 @@ with open('SDE_task/sdetask/output/product_summary_report.csv', 'w') as f:
 
     # write results of the last execution i.e. cursor (c) to the csv file
     writer.writerows(c)
+
+conn.close()
