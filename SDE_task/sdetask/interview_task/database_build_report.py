@@ -14,13 +14,16 @@ To inform the new user of:
     Content and structure of tables
     Sample Data
     Success of build
-"""
 
+Output: Printed to terminal
+"""
 
 import sqlite3
 
+from set_parameters import db_path
+
 # Database connection
-conn = sqlite3.connect('SDE_task/sdetask/data/mortgages.db')
+conn = sqlite3.connect(db_path)
 
 # Cursor
 c = conn.cursor()
@@ -36,7 +39,6 @@ for table_name in table_names:
 
     # Column Attributes - Meaning
     c.execute("SELECT * FROM pragma_table_info")
-    # Variable Descriptors
     column_attribute_headers = [descriptor[0] for descriptor in c.description]
     print(column_attribute_headers)
 
