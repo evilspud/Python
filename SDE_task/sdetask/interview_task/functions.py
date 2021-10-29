@@ -9,6 +9,8 @@ Define functions
 
 import math
 
+print("functions.py starts")
+
 
 def in_default(
         customer_bankruptcy_flags: list, in_possession: bool,
@@ -90,3 +92,6 @@ def yn_bool(yn_flag: str) -> bool:
     """
 
     return True if yn_flag.upper() == 'Y' else False
+
+
+print("functions.py ends")

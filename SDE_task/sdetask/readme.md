@@ -25,7 +25,7 @@ Set-up:
     The user will need to specify the database location in set_parameters.py.
 
 Run:
-    bin/run_interview_task.sh
+    bin/run_interview_task.py
 
 Approach:
     Set_parameters.py:
@@ -74,7 +74,9 @@ Further Development:
         database output that does not have a unique primary key.
     If this was the case, I would do all the joining in SQLITE and avoid the
         need to have list comperehensions to join accounts and customers.
-    
+    With more time, I would make the contents od database_build_report.py
+        print to a text file rather than to terminal.
     It would be useful to add logging, more error handling and pytest testing.
-
     Parameters could be added to the command line when running.
+    I would add testing for the existence of the specified directory
+        before creation of the output files.

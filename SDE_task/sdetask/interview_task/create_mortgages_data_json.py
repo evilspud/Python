@@ -41,7 +41,9 @@ from functions import months_in_arrears
 from functions import yn_bool
 
 from set_parameters import db_path
+from set_parameters import json_path
 
+print("create_mortgages_data_json.py starts")
 
 # Database connection
 conn = sqlite3.connect(db_path)
@@ -125,5 +127,7 @@ for account in accounts_sql_output:
 
     json_output["accounts"].append(account_dict)
 
-with open("SDE_task/sdetask/output/mortgages_data.json", "w") as json_file:
+with open(json_path, "w") as json_file:
     json.dump(json_output, json_file, indent=4)
+
+print("create_mortgages_data_json.py ends")
