@@ -20,18 +20,18 @@ c = conn.cursor()
 
 # list of deceased customer numbers
 c.execute("""
-SELECT DISTINCT c_customer_number
-FROM customers
-WHERE c_deceased_date != ''
+    SELECT DISTINCT c_customer_number
+    FROM customers
+    WHERE c_deceased_date != ''
 """)
 output = c.fetchall()
 print("Deceased: \n\n", output, "\n")
 
 # regular payment is zero or missing
 c.execute("""
-SELECT a_account_number, a_regular_payment_amount
-FROM accounts
-WHERE a_regular_payment_amount in (0, null)
+    SELECT a_account_number, a_regular_payment_amount
+    FROM accounts
+    WHERE a_regular_payment_amount in (0, null)
 """)
 output = c.fetchall()
 print("Regular Payment Zero/Missing: \n\n", output, "\n")
@@ -39,14 +39,14 @@ print("Regular Payment Zero/Missing: \n\n", output, "\n")
 # No primary key on accounts_customer_link - meaning you might get
 # multiple customers in each account position - TRUE
 c.execute("""
-SELECT DISTINCT
-    acl_account_number,
-    acl_customer_pos,
-    count(acl_customer_number) as count_cust
-FROM accounts_customer_link
-GROUP BY acl_account_number,
-         acl_customer_pos
-HAVING count_cust > 1
+    SELECT DISTINCT
+        acl_account_number,
+        acl_customer_pos,
+        count(acl_customer_number) as count_cust
+    FROM accounts_customer_link
+    GROUP BY acl_account_number,
+            acl_customer_pos
+    HAVING count_cust > 1
 """)
 output = c.fetchall()
 print("Accounts with multiple customers in a position: \n\n", output, "\n")

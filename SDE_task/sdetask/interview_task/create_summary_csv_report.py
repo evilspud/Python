@@ -22,6 +22,7 @@ import sqlite3
 
 from set_parameters import csv_path
 from set_parameters import db_path
+from set_parameters import path_existence
 
 # Database connection
 conn = sqlite3.connect(db_path)
@@ -60,5 +61,8 @@ with open(csv_path, 'w') as f:
     writer.writerows(c)
 
 conn.close()
+
+# Test creation
+path_existence(csv_path)
 
 print("create_summary_csv_report.py ends")

@@ -4,12 +4,12 @@
 
 Author: Matthew Southerington
 
-Set necessary user-defined parameters. Return an error is an invalid filepath
+Set necessary user-defined parameters. Return an error if an invalid filepath
 is defined.
 """
 
-import os
 import errno
+import os
 
 print("set_parameters.py starts")
 
@@ -41,6 +41,6 @@ csv_location = "output/product_summary_report.csv"
 csv_path = root_dir + csv_location
 
 json_location = "output/mortgages_data.json"
-json_path = root_dir + csv_location
+json_path = root_dir + json_location
 
 print("set_parameters.py ends")
