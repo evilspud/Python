@@ -8,7 +8,9 @@ Import packages, functions and parameters.
 
 Create a database connection and extract data from the SQLite3 mortgages
 database.
+
 Find accounts and join properties.
+
 Find customers and account link information.
 
 For each account:
@@ -18,9 +20,10 @@ For each account:
     Build individual account dictionary
     Append dictionary to overall output
 
-Create/overwrite a JSON file
+Create/overwrite JSON file
 
 JSON output fields:
+    account_number
     months_in_arrears
     in_possession
     in_default
@@ -41,7 +44,10 @@ from functions import months_in_arrears
 from functions import yn_bool
 
 from set_parameters import db_path
+from set_parameters import json_path
+from set_parameters import path_existence
 
+print("create_mortgages_data_json.py starts")
 
 # Database connection
 conn = sqlite3.connect(db_path)
@@ -80,7 +86,6 @@ c.execute("""
 customers_sql_output = c.fetchall()
 
 conn.close()
-
 
 json_output = {"accounts": []}
 
@@ -125,5 +130,10 @@ for account in accounts_sql_output:
 
     json_output["accounts"].append(account_dict)
 
-with open("SDE_task/sdetask/output/mortgages_data.json", "w") as json_file:
+with open(json_path, "w") as json_file:
     json.dump(json_output, json_file, indent=4)
+
+# Test Creation
+path_existence(json_path)
+
+print("create_mortgages_data_json.py ends")

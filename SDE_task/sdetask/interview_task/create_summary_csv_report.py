@@ -20,8 +20,9 @@ Returns file 'product_summary_report.csv'.
 import csv
 import sqlite3
 
+from set_parameters import csv_path
 from set_parameters import db_path
-
+from set_parameters import path_existence
 
 # Database connection
 conn = sqlite3.connect(db_path)
@@ -42,10 +43,12 @@ c.execute("""SELECT DISTINCT
 """
           )
 
+print("create_summary_csv_report.py starts")
+
 # CSV export
 # use with statement so that csv path only remains open when being used
 # open csv in write mode
-with open('SDE_task/sdetask/output/product_summary_report.csv', 'w') as f:
+with open(csv_path, 'w') as f:
 
     # create the csv writer
     writer = csv.writer(f)
@@ -58,3 +61,8 @@ with open('SDE_task/sdetask/output/product_summary_report.csv', 'w') as f:
     writer.writerows(c)
 
 conn.close()
+
+# Test creation
+path_existence(csv_path)
+
+print("create_summary_csv_report.py ends")

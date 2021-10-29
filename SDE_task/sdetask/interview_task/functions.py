@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""test_db_creation.py
+"""functions.py
 
 Author: Matthew Southerington
 
@@ -8,6 +8,8 @@ Define functions
 """
 
 import math
+
+print("functions.py starts")
 
 
 def in_default(
@@ -26,7 +28,7 @@ def in_default(
         bankruptcy status of the selected customers
     in_possession (bool): A boolean representing whether the account is in
         possession
-    months_in_arrars (float): Total arrears balance divided by regular monthly
+    months_in_arrears (float): Total arrears balance divided by regular monthly
         payment, floored at zero
 
     Returns:
@@ -58,8 +60,8 @@ def months_in_arrears(
         arrears_balance: float,
         regular_payment_amount: float) -> float:
     """Absolute arrears balance for an account divided by the
-        regular monthly payment amount. The value should be rounded to 1
-        decimal place. The minimum value should be 0.
+        regular monthly payment amount. Rounded to 1 decimal place. The minimum
+        value should be 0.
 
     Args:
     arrears_balance (float): Absolute arrears balance
@@ -90,3 +92,6 @@ def yn_bool(yn_flag: str) -> bool:
     """
 
     return True if yn_flag.upper() == 'Y' else False
+
+
+print("functions.py ends")

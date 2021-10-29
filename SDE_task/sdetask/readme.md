@@ -22,10 +22,14 @@ Data Quality observations:
 
 Set-up:
     Run the database set-up as supplied with the task.
-    The user will need to specify the database location in set_parameters.py.
+    The user will need to specify locations in set_parameters.py.
 
 Run:
-    bin/run_interview_task.sh
+    Task 1:
+    sdetask/interview_task/create_suummary_csv_report.py
+
+    Task 2:
+    sdetask/interview_task/create_mortgages_data_json.py
 
 Approach:
     Set_parameters.py:
@@ -50,15 +54,15 @@ Approach:
         Account-distinct data and customer-distinct data have been returned
         separately and joined by matching dictionary keys.
 
-        Data has been fed from a list of tuples (SQL) into separate variables
-        in order to calculate derived fields.
+        Data has been fed from a list of tuples into separate variables
+        in order to calculate derived fields with the functions defined.
 
 Style:
     I've deliberately over-commented the code and headers in order to give
         information. 
     
     Variable names are deliberately not the same as their corresponding
-        functions.
+        functions to avoid confusion.
 
     In some places I've done the same thing in different ways to highlight that
         it can be done in each way. Normally, consistency would be better.
@@ -71,10 +75,13 @@ Critique:
 
 Further Development:
     I'm sure there's a way of more simply creating a nested json file from
-        database output that does not have a unique primary key.
+        database outputs that do not have a unique primary key.
     If this was the case, I would do all the joining in SQLITE and avoid the
         need to have list comperehensions to join accounts and customers.
-    
-    It would be useful to add logging, more error handling and pytest testing.
 
+    With more time, I would make the contents of database_build_report.py
+        print to a text file rather than to terminal.
+    It would be useful to add logging, more error handling and pytest testing.
     Parameters could be added to the command line when running.
+    I would add testing for the existence of the specified directory
+        before creation of the output files.
