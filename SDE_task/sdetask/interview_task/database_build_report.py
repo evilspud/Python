@@ -22,7 +22,7 @@ import sqlite3
 
 from set_parameters import db_path
 
-print("database_build_report.py starts")
+print("Database_build_report.py starts")
 
 # Database connection
 conn = sqlite3.connect(db_path)
@@ -61,4 +61,4 @@ for table_name in table_names:
 
 conn.close()
 
-print("database_build_report.py ends")
+print("Database_build_report.py ends")

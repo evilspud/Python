@@ -19,6 +19,7 @@ Data Quality observations:
     Some customer account positions have two or more customers
         This has been noted but accepted and exported as there are no priority
         criteria on the brief
+    Customer deceased dates are in the future.
 
 Set-up:
     Run the database set-up as supplied with the task.
@@ -56,6 +57,8 @@ Approach:
 
         Data has been fed from a list of tuples into separate variables
         in order to calculate derived fields with the functions defined.
+    unit_test.py:
+        Function testing script with parameters.
 
 Style:
     I've deliberately over-commented the code and headers in order to give
@@ -72,6 +75,7 @@ Style:
 Critique:
     Due to the list comprehension approach in create_mortgages_data_json.py,
         performance would suffer if the database tables were very large.
+    Testing works but can probably be better achieved with unittest or similar. 
 
 Further Development:
     I'm sure there's a way of more simply creating a nested json file from
@@ -81,7 +85,14 @@ Further Development:
 
     With more time, I would make the contents of database_build_report.py
         print to a text file rather than to terminal.
-    It would be useful to add logging, more error handling and pytest testing.
+    It would be useful to add logging, more error handling and testing.
     Parameters could be added to the command line when running.
     I would add testing for the existence of the specified directory
         before creation of the output files.
+    
+    Assuming it was wanted, the is_deceased function would test if the deceased 
+        date is later than a given parameter date
+            i.e. datetime.now() or user-specified
+        and would return either:
+            an error
+            False

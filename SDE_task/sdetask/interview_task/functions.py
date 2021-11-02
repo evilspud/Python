@@ -9,7 +9,8 @@ Define functions
 
 import math
 
-print("functions.py starts")
+
+print("Functions.py starts")
 
 
 def in_default(
@@ -39,11 +40,13 @@ def in_default(
 
     return (
         (is_account_bankrupt and months_in_arrears >= 3)
-        or months_in_arrears >= 6
+        or months_in_arrears > 6
         or in_possession
     )
 
 
+# NB as noted in readme, further criteria could be added to deal with data
+# quality issues
 def is_deceased(deceased_date: str) -> bool:
     """Boolean to indicate if customer deceased date is populated
 
@@ -70,28 +73,31 @@ def months_in_arrears(
     Returns:
     float: Months in Arrears to one decimal place, floored at zero.
     """
-
-    if regular_payment_amount in (0, math.isnan):
+    if math.isnan(regular_payment_amount) or regular_payment_amount == 0:
         return 0
+
     else:
         return max(round(arrears_balance/regular_payment_amount, 1), 0)
 
 
+# In reality you may wish to return an error to highlight invalid data
 def yn_bool(yn_flag: str) -> bool:
     """Coverts a Y/N string field to boolean
 
     Args:
     yn_flag (str): A string of (ideally) Y and N flags. Flags will be converted
-    to upper case.
+    to upper case assuming the string is not empty.
 
-    Any flag which is not Y will be returned as False. (In reality you may
-    wish to return an error to highlight invalid data)
+    Any flag which is not Y will be returned as False.
 
     Returns:
     bool: yn_bool
     """
+    # Check for populated string
+    if not yn_flag:
+        return False
 
     return True if yn_flag.upper() == 'Y' else False
 
 
-print("functions.py ends")
+print("Functions.py ends")

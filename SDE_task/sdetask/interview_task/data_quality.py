@@ -8,9 +8,10 @@ SQL check queries to better understand data issues.
 """
 
 import sqlite3
+from datetime import datetime
 from set_parameters import db_path
 
-print("data_quality.py starts")
+print("Data_quality.py starts")
 
 # Database connection
 conn = sqlite3.connect(db_path)
@@ -19,13 +20,26 @@ conn = sqlite3.connect(db_path)
 c = conn.cursor()
 
 # list of deceased customer numbers
+# Noted that one customer deceased date is in the future
 c.execute("""
-    SELECT DISTINCT c_customer_number
+    SELECT DISTINCT
+        c_customer_number
+        ,c_deceased_date
     FROM customers
     WHERE c_deceased_date != ''
 """)
 output = c.fetchall()
 print("Deceased: \n\n", output, "\n")
+
+# create sorted list of dates
+deceased_date_list = []
+for customer in output:
+
+    d = datetime.strptime(customer[1], '%b-%y').strftime('%Y-%m')
+    deceased_date_list.append(d)
+
+deceased_date_list.sort()
+print(deceased_date_list)
 
 # regular payment is zero or missing
 c.execute("""
@@ -53,6 +67,8 @@ print("Accounts with multiple customers in a position: \n\n", output, "\n")
 
 
 # Y/N flags which are not Y or N
+# Function is here instead of functions.py as it is not integral to the
+# reporting tasks
 def dq_yn_check(id, variable, table) -> list:
     with conn:
         c.execute(f"""SELECT
@@ -76,4 +92,4 @@ dq_yn_check('pt_property_number', 'pt_in_possession', 'properties')
 
 conn.close()
 
-print("data_quality.py ends")
+print("Data_quality.py ends")

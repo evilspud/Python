@@ -47,7 +47,7 @@ from set_parameters import db_path
 from set_parameters import json_path
 from set_parameters import path_existence
 
-print("create_mortgages_data_json.py starts")
+print("Create_mortgages_data_json.py starts")
 
 # Database connection
 conn = sqlite3.connect(db_path)
@@ -136,4 +136,4 @@ with open(json_path, "w") as json_file:
 # Test Creation
 path_existence(json_path)
 
-print("create_mortgages_data_json.py ends")
+print("Create_mortgages_data_json.py ends")

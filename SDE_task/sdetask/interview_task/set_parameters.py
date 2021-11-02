@@ -11,7 +11,7 @@ is defined.
 import errno
 import os
 
-print("set_parameters.py starts")
+print("Set_parameters.py starts")
 
 
 def path_existence(path: str):
@@ -43,4 +43,4 @@ csv_path = root_dir + csv_location
 json_location = "output/mortgages_data.json"
 json_path = root_dir + json_location
 
-print("set_parameters.py ends")
+print("Set_parameters.py ends")

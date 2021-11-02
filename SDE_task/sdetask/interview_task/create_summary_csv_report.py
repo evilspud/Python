@@ -24,6 +24,9 @@ from set_parameters import csv_path
 from set_parameters import db_path
 from set_parameters import path_existence
 
+
+print("Create_summary_csv_report.py starts")
+
 # Database connection
 conn = sqlite3.connect(db_path)
 
@@ -42,8 +45,6 @@ c.execute("""SELECT DISTINCT
 
 """
           )
-
-print("create_summary_csv_report.py starts")
 
 # CSV export
 # use with statement so that csv path only remains open when being used
@@ -65,4 +66,4 @@ conn.close()
 # Test creation
 path_existence(csv_path)
 
-print("create_summary_csv_report.py ends")
+print("Create_summary_csv_report.py ends")
